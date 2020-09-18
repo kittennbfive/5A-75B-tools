@@ -1,0 +1,22 @@
+#! /bin/sh
+
+#This automates the making of the HTML-FPGA-Pinout-File
+
+#(c) 2020 by kitten_nb_five
+#AGPLv3+
+#THIS CODE IS PROVIDED WITHOUT ANY WARRANTY!
+
+chmod +x parse_csv.pl
+chmod +x parse_connections.pl
+chmod +x make_js.pl
+chmod +x make_html.pl
+
+if [ ! -e "ECP5U25Pinout.csv" ]; then
+	echo ECP5U25Pinout.csv not found, trying to download...
+	wget https://www.latticesemi.com/view_document?document_id=50485 -O ECP5U25Pinout.csv || exit
+fi
+
+./parse_csv.pl && ./parse_connections.pl && ./make_js.pl && ./make_html.pl && echo ALL DONE - check result.htm
+
+rm connections_fpga.storable
+rm fpga_cabga256_data.storable

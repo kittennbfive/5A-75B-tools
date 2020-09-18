@@ -1,0 +1,17 @@
+#extracted from https://github.com/q3k/chubby75/blob/master/5a-75b/hardware_V7.0.md
+#licence: CC0
+| GTXCLK  | M2       |
+| TXD[0]  | L1       |
+| TXD[1]  | L3       |
+| TXD[2]  | P2       |
+| TXD[3]  | L4       |
+| TX\_EN  | M3       |
+| RXC     | M1       |
+| RXD[0]  | N1       |
+| RXD[1]  | M5       |
+| RXD[2]  | N5       |
+| RXD[3]  | M6       |
+| RXD\_DV | N6       |
+| MDC     | P3       |
+| MDIO    | T2       |
+| ~RESET  | P5       |
