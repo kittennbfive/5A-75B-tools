@@ -35,7 +35,7 @@ print $out <<"END1";
 <!-- NO WARRANTY! -->
 <head>
 <meta charset="utf-8" />
-<title>5A-75B V7.0 ICE40 FPGA-View</title>
+<title>5A-75B V7.0 ECP5 FPGA-View</title>
 <style>
 body { font-family: sans-serif; }
 
