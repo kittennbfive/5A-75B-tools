@@ -1,4 +1,4 @@
-This is a collection of scripts (Perl5) to get a more visual representation of the Pinout of the ICE40-FPGA and see what is connected where.
+This is a collection of scripts (Perl5) to get a more visual representation of the Pinout of the ECP5-FPGA and see what is connected where.
 
 VALID ONLY FOR 5A-75B VERSION 7.0!
 
