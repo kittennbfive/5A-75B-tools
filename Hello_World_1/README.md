@@ -8,7 +8,7 @@ It is basically a direct connection (trough the FPGA) of the button and the (sec
 The LED will light as long as you press the button.  
 Current consumption of the board is about 100mA.  
 
-The actual Verilog code is in top.v.  
+The actual Verilog code is in `top.v`.  
 
 **MAKING THE TOOLCHAIN:**  
 https://github.com/YosysHQ/prjtrellis  
