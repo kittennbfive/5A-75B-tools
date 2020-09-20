@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 =pod
-This script creates connectors.htm.
+This script creates result.htm.
 
 PINS 4 AND 16 HARDCODED TO GND
 
