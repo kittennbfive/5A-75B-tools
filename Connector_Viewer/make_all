@@ -1,0 +1,16 @@
+#! /bin/sh
+
+#This automates the making of the HTML-Connector-View-file.
+
+#(c) 2020 by kitten_nb_five
+#AGPLv3+
+#THIS CODE IS PROVIDED WITHOUT ANY WARRANTY!
+
+chmod +x parse_pin_con.pl
+chmod +x make_js_con.pl
+chmod +x make_html_con.pl
+
+./parse_pin_con.pl && ./make_js_con.pl && ./make_html_con.pl && echo ALL DONE - check result.htm
+
+rm buffer_con.storable
+rm connectors.storable
