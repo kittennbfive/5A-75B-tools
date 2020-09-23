@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 =pod
-This script creates data.js using connectors.storable and buffer_con.storable.
+This script creates data.js using connectors.storable, buffer_con.storable and fpga_pins.storable.
 
 (c) 2020 by kitten_nb_five
 AGPLv3+
@@ -18,6 +18,9 @@ my %connectors; #{J<n>}->{<pin>}={ buffer=>U<n>, bit=><bitnr>, fpga_pin=><alphan
 
 my %buffer_con; #{U<n>}->{<bitnr>}=[{ con=>J<n>, pin=><n> }]
 %buffer_con=%{retrieve('buffer_con.storable')};
+
+my %fpga; #{<alphanum>}->[J<n>_<n>];
+%fpga=%{retrieve('fpga_pins.storable')};
 
 open my $out, '>', 'data.js';
 
@@ -43,11 +46,22 @@ foreach my $j (sort keys %connectors)
 		print $out "\t\t\t\t\t['buffer','",$connectors{$j}->{$pin}->{buffer},"'],\n";
 		print $out "\t\t\t\t\t['bit','",$connectors{$j}->{$pin}->{bit},"'],\n";
 		print $out "\t\t\t\t\t['fpga_pin','",$connectors{$j}->{$pin}->{fpga_pin},"'],\n";
-		print $out "\t\t\t\t\t['also_connected_to',\n";
+		print $out "\t\t\t\t\t['directly_connected_to',\n";
 		print $out "\t\t\t\t\t\t[\n";
-		list_other_con($j, $pin);
+		my @direct=get_direct_cons($j, $pin);
+		my @arr=@direct;
+		map({ $_="'$_'" } @arr);
+		print $out "\t\t\t\t\t\t\t", join(', ', @arr),"\n" if(scalar(@arr));
 		print $out "\t\t\t\t\t\t]\n";
-		print $out "\t\t\t\t\t]\n";
+		print $out "\t\t\t\t\t],\n";
+		
+		print $out "\t\t\t\t\t['same_fpga_pin',\n";
+		print $out "\t\t\t\t\t\t[\n";
+		list_same_fpga_pin($connectors{$j}->{$pin}->{fpga_pin}, $j, $pin, @direct);
+		print $out "\t\t\t\t\t\t]\n";
+		print $out "\t\t\t\t\t],\n";
+		
+		
 		print $out "\t\t\t\t])\n";
 		print $out "\t\t\t],\n";
 	}
@@ -78,18 +92,36 @@ close $out;
 
 ########################################################################
 
-sub list_other_con
+sub get_direct_cons
 {
 	my ($j, $pin)=(shift, shift);
 	my $buf=$connectors{$j}->{$pin}->{buffer};
 	my $bit=$connectors{$j}->{$pin}->{bit};
 	my @others=@{$buffer_con{$buf}->{$bit}};
+	my @r;
 	foreach my $ref (@others)
 	{
 		my $c=$ref->{con};
 		my $p=$ref->{pin};
 		next if($c eq $j && $p==$pin);
-		print $out "\t\t\t\t\t\t\tnew Map([['con', '$c'],['pin','$p']]),\n";
+		push @r, $c."_".$p;
 	}
+	
+	return @r;
 }
 
+sub list_same_fpga_pin
+{
+	no warnings "experimental";
+	my ($pin_fpga, $j, $pin_j, @directs)=(shift, shift, shift, @_);
+	
+	my $con=$j."_".$pin_j;
+
+	foreach my $c (@{$fpga{$pin_fpga}})
+	{
+		next if($c eq $con);
+		next if ($c ~~ @directs);
+			
+		print $out "\t\t\t\t\t\t\t'$c',\n";
+	}
+}

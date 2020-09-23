@@ -94,16 +94,23 @@ function ev_click(e)
 	
 	if(connectors.get(con).get(pin))
 	{
-		var other_connections=connectors.get(con).get(pin).get("also_connected_to");
-		
+		var con_direct=connectors.get(con).get(pin).get("directly_connected_to");
 		var i;
-		for(i=0; i<other_connections.length; i++)
+		for(i=0; i<con_direct.length; i++)
 		{
-			var c=other_connections[i].get("con");
-			var p=other_connections[i].get("pin");
-			var el=document.getElementById("pin_"+c+"_"+p);
+			var c=con_direct[i];
+			var el=document.getElementById("pin_"+c);
 			last.push(el);
 			el.style="background-color: yellow;";
+		}
+		
+		var con_fpga=connectors.get(con).get(pin).get("same_fpga_pin");
+		for(i=0; i<con_fpga.length; i++)
+		{
+			var c=con_fpga[i];
+			var el=document.getElementById("pin_"+c);
+			last.push(el);
+			el.style="background-color: green;";
 		}
 	}
 }
@@ -187,6 +194,7 @@ print $out <<"END4";
 	</select>
 	<input type="button" value="Do it!" id="highlight_button">
 </form>
+red: selected pin<br>yellow: direct connections<br>green: same FPGA-pin but trough different buffer<br>blue: highlight buffer
 </div>
 <div style="float: right;">
 <p>&copy; 2020 by <a href="https://github.com/kittennbfive">kitten_nb_five</a> - AGPLv3+</p>

@@ -15,6 +15,7 @@ use Storable;
 
 my %buffer_con; #{U<n>}->{<bitnr>}=[{ con=>J<n>, pin=><n> }]
 my %connectors; #{J<n>}->{<pin>}={ buffer=>U<n>, bit=><bitnr>, fpga_pin=><alphanum> }
+my %fpga; #{<alphanum>->[J<n>_<n>];
 
 open my $in, '<', 'pin_con.txt';
 my $line;
@@ -33,9 +34,11 @@ while(($line=<$in>))
 		$buffer=~s/_B\d//;
 		push @{$buffer_con{$buffer}->{$bitnr}}, { con=>$curr_j, pin=>$pin_j };
 		$connectors{$curr_j}->{$pin_j}={ buffer=>$buffer, bit=>$bitnr, fpga_pin=>$pin_fpga };
+		push @{$fpga{$pin_fpga}}, $curr_j.'_'.$pin_j;
 	}
 }
 close $in;
 
 store \%buffer_con, 'buffer_con.storable';
 store \%connectors, 'connectors.storable';
+store \%fpga, 'fpga_pins.storable';

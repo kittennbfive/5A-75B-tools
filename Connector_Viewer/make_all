@@ -14,3 +14,4 @@ chmod +x make_html_con.pl
 
 rm buffer_con.storable
 rm connectors.storable
+rm fpga_pins.storable
