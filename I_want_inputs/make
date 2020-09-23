@@ -1,0 +1,3 @@
+#! /bin/sh
+
+yosys -p "synth_ecp5 -json out.json -top test_inputs" -q -e ".+" test_inp.v && nextpnr-ecp5 --json out.json --25k --package CABGA256 --lpf constraints.lpf --textcfg out.cfg -q && ecppack --svf bitstream.svf out.cfg && rm out.json && rm out.cfg
