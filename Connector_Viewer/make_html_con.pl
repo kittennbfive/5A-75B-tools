@@ -224,21 +224,21 @@ sub make_connector
 	print $out "\t\t\t\t<tr>\n";
 	if($pos eq 'top')
 	{
-		make_pin($con, $_) foreach (reverse 1..8);
+		make_pin($con, $_) foreach (reverse qw/1 3 5 7 9 11 13 15/);
 	}
 	else
 	{
-		make_pin($con, $_) foreach (reverse 9..16);
+		make_pin($con, $_) foreach (qw/2 4 6 8 10 12 14 16/);
 	}
 	print $out "\t\t\t\t</tr>\n";
 	print $out "\t\t\t\t<tr>\n";
 	if($pos eq 'top')
 	{
-		make_pin($con, $_) foreach (9..16);
+		make_pin($con, $_) foreach (reverse qw/2 4 6 8 10 12 14 16/);
 	}
 	else
 	{
-		make_pin($con, $_) foreach (1..8);
+		make_pin($con, $_) foreach (qw/1 3 5 7 9 11 13 15/);
 	}
 	print $out "\t\t\t\t</tr>\n";
 	print $out "\t\t\t</table>\n";
