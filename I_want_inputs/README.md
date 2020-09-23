@@ -12,6 +12,8 @@ Luckely these two pins (DIR and Vcc, 1 and 20) are on the most left side of the 
 
 I tested with a very simple bitstream that is just an XOR of 2 inputs and it seems to work.
 
+In theory (untested) it should be possible to wire the DIR pin to a switch (or an FPGA output pin) to switch between output (3,3V) and input (3,3V-5V).
+
 **IMPORTANT:** You need to make sure that the pins of the FPGA that are used as inputs are configured properly, ie as INPUTS and not as OUTPUTS as in the default bitstream. Otherwise you will have the FPGA fighting against the buffer, thats not good... To do this you could programm a bitstream that uses the FPGA-pins as inputs into the FLASH or - as i did - remove the FLASH so the FPGA will power up unconfigured. Of course removing the FLASH means you need to reprogramm the FPGA after each power cycle, but for me this is just fine (I use this as a devboard to learn Verilog.). This also reduces the current consumption from 250-300mA (configured with default bitstream) to about 80mA unconfigured.
 
 If you want to add more inputs you can use my tool in Connector_Viewer/ to visualize which buffer is connected where, what pins are connected together and so on.
