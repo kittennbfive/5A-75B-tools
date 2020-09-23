@@ -7,6 +7,8 @@ Connector_viewer/ contains some other scripts to make a graphical representation
 
 Hello_World_1/ contains a really basic but complete example, from the Verilog-code to the actual programming of the bitstream.
 
+I_want_inputs/ contains a hardware-modification for getting 5V-tolerant inputs. 
+
 General informations about this device can be found here: https://github.com/q3k/chubby75
 
 (c) 2020 by kitten_nb_five - AGPLv3+ unless otherwise specified
