@@ -8,7 +8,7 @@ A solution is to remove the buffers and use small custom made PCBs to bridge the
 
 I decided to use `SN74LVC245APWR` (full name for ordering some, i bought mine at RS). These things are very similar to the 74**HC**245 but they are 3,3V only(!!) *but* can tolerate up to 5,5V on the inputs. Of course we can't just solder them directly in place of the old buffers because the supply voltage is wrong (5V instead of 3,3V) and the DIR-pin must be grounded instead of connected to Vcc.
 
-Luckely these two pins (DIR and Vcc, 1 and 20) are on the most left side of the IC which means we can do a little surgery: I removed the old buffer, put some polyimide tape over the 2 pins that must be connected elsewhere and soldered a 74LVC245 on the remaining pins. Then i used some fine wire to connect DIR (pin 1) to GND (on a capacitor nearby) and Vcc (pin 20) to **3,3V**.
+Luckely these two pins (DIR and Vcc, 1 and 20) are on the most left side of the IC which means we can do a little surgery: I removed the old buffer (U9), put some polyimide tape over the 2 pins that must be connected elsewhere and soldered a 74LVC245 on the remaining pins. Then i used some fine wire to connect DIR (pin 1) to GND (on a capacitor nearby) and Vcc (pin 20) to **3,3V**.
 
 I tested with a very simple bitstream that is just an XOR of 2 inputs and it seems to work.
 
