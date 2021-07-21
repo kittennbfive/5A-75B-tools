@@ -1,0 +1,53 @@
+Inside this file are some random notes on how to manually instantiate / use an PDPW16KD "Pseudo Dual Port RAM" for ECP5 using the Yosys-toolchain. Written for beginners by a beginner who struggled quite a bit using these things...
+
+This file is provided by kittennbfive WITHOUT ANY WARRANTY! MIGHT BE WRONG! Consider this text with great scepticism if something does not match observed behaviour or the code of the Yosys-toolchain.
+
+Generally speaking, you probably don't need this as Yosys can automatically infer (~use) EBR (embedded block RAM) when needed. But for some special requirements or for learning how it actually works it might be necessary / useful to do this manually.
+
+0) Mandatory documentation:
+-"FPGA Libraries Reference Guide"
+-"ECP5 and ECP5-5G Memory Usage Guide"
+-might be handy if you get some "xyz is not defined" errors or want to know the defaults:  https://github.com/YosysHQ/yosys/blob/master/techlibs/ecp5/cells_bb.v#L733
+
+1) Connections and Attributes of the PDPW16KD primitive:
+For some unknown reason the people at Lattice decided NOT to use busses for the addresses and data, so each connection (up to 2*36 just for data!) must be declared individually. Yeah. See ecp5_bb_sanitizer.pl for a "fix".
+
+The connections or "pins" of the primitive are listed in the "FPGA Libraries Reference Guide" on page 662. Here is a quick walkaround:
+ADW (9 bits): address for writing data - no internal automatic increment or something like this
+DI (36 bits): data input for writing
+CLKW (1 bit): clock for writing - connect this to an always running clock and use the enable below to trigger an actual write
+CEW (1 bit): write clock enable - this triggers the actual write
+CSW (3 bits): used to chain together several EBR, connect to '0' if unused. See also CSDECODE_W.
+BE (4 bits): IMPORTANT! Byte Enable for writing. This allows you to mask (=NOT write) part of your data. In doubt and for a first test connect all those to '1'. If all 4 bits are connected to '0' NOTHING AT ALL will ever be written!
+ADR (14 bits): address for reading data
+DO (36 bits): data output for reading
+CLKR (1 bit): clock for reading - same comment as above
+CER (1 bit): read clock enable - see above
+CSR (3 bits): same as CSW but for reading
+RST (1 bit): Reset, active high, tie to '0' if unused
+OCER (1 bit): something about output enable (output clock enable register???), i just connected this to '1' and it worked but i am not sure about this one (somebody?)
+
+There are also multiple attributes to configure the EBR. A few of them:
+DATA_WIDTH_R: width of the data bus for READING, can only be one of 1, 2, 4, 9, 18, 36 (not 8!)
+DATA_WIDTH_W: width of the data bus for WRITING, MUST BE 36! Use this Byte Enable stuff and some logic for writing single bytes (or just use whatever part of the 36 bit data bus you actually need if this gives you enough memory depth).
+CSDECODE_W: Used in conjunction with CS_W_ above. If unused don't change (defaults to 0b000).
+CSDECODE_W: Used in conjunction with CS_R_ above. If unused don't change (defaults to 0b000).
+INITVAL_xx: Used to initialize the EBR with some data. For details consult ECP5_EBR_INITVAL.txt.
+
+Depending on DATA_WIDTH_R you will not need all 14 bits of ADR[13:0]. You have to calculate how many bits you need and discard the LOWEST unneeded bits of ADR, not the highest as one might think. Said otherwise, for a 9 bit wide data bus you need ADR3 (LSB) to ADR13 (MSB). 
+
+2) Timing
+In the Memory Usage Guide there are various timing diagrams with annotations like tSUCE_EBR, tHCE_EBR and so on. I was unable to find the actual numbers for these constants. I am sure they are defined somewhere, but i did not find them for the ECP5. I found numbers for some other Lattice-FPGA, from what i remember you probably don't need to worry about timing except maybe for really high clock rates. I ran quick tests with 200MHz(!) input clock to the EBR and had no problems, but i do not guarantee anything!
+
+3) ROM, FIFOs and other animals
+When talking about EBR the ECP5 only has two things: DP16KD (true dual port) and PDPW16KD (pseudo dual port). At this moment in time only the latter seems to be supported by Yosys. The other things that are mentioned / explained in the Memory Usage Guide are built by the Lattice software using EBR and logic around. If you want to use only Yosys you have to write code yourself or find some FOSS stuff on the internet.
+
+For a ROM you don't actually need code, just use a PDPW16KD with CLKW and CEW tied to '0' so you can't write to it and initialize it with your data using INITVAL-constructs.
+
+4) Simulation
+At this moment in time there is no FOSS model of the PDPW16KD for simulation. If you have the Diamond software from Lattice you can find some files somewhere inside their stuff, but i don't know if it is legal to use these with other tools and so on (also it did not work for me, whatever...). 
+
+
+
+
+(version 1 - 20.07.21)
