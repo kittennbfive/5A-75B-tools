@@ -1,0 +1,31 @@
+This is a quick note about how the INITVAL_xx works for the Embedded Block RAM on the ECP5, using the Yosys-toolchain of course.
+
+This file is provided by kittennbfive WITHOUT ANY WARRANTY! MIGHT BE WRONG! Consider this text with great scepticism if something does not match observed behaviour or the code of the Yosys-toolchain.
+
+Each EBR can store 18*1024=18432 BITS. The number of EBR depends on the exact silicon (-25, -45, ...) you have -> datasheet.
+
+When instantiating an EBR with full initialisation you need to provide 64 "INITVAL" of 320 bits each. That's a total of 20*1024 bits because of some padding.
+
+The first INITVAL defines the content at the beginning of the memory (starting at addr 0).
+
+Inside an INITVAL the data for the lowest address that this INITVAL is for is at the RIGHT side when writing the data as hex/bin, or said otherwise the least significant bit of the INITVAL is also the LSB of the value for the lowest address for this INITVAL.
+
+Explained yet another way: For a 4 bit wide memory .INITVAL_00(4'b0001) will set the value 0x1 for address 0.
+
+When adding more data you have to be careful because of the padding: Each 18 data bits there are 2 unused bits. For a 4 bit wide memory there is an additional bit of padding after 8 bits, as (8+1)*2=18, followed by the 2 bits padding as stated above.
+
+If you just want to add data inside your EBR there is probably some easy Verilog-way. Also there is a tool called "ecpbram" part of nextpnr that can change the initialisation data inside the configuration file spit out by nextpnr.
+
+If you want or need to do things manually, here is an example for (the very first bytes) of a 9 bit wide counter:
+
+.INITVAL_00('b<insert more data here>00_000000111_000000110_00_000000101_000000100_00_000000011_000000010_00_000000001_000000000)
+
+Be aware that the EBR has some weird size requirements, i.e. you can only use 1 or 4 or 9 (not 8 as for a byte) or 18 or 36 bit wide data words. Also for PDPW16KD that is supported by Yosys the size of the data bus for writing(!) MUST BE 36 (see "FPGA Libraries Reference Guide" p. 662 and think about the size of an EBR and the size of the address-bus - you see?).
+
+
+
+
+
+
+
+(version 1 - 20.07.21)
