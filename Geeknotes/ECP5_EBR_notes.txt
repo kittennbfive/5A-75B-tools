@@ -1,3 +1,4 @@
+
 Inside this file are some random notes on how to manually instantiate / use an PDPW16KD "Pseudo Dual Port RAM" for ECP5 using the Yosys-toolchain. Written for beginners by a beginner who struggled quite a bit using these things...
 
 This file is provided by kittennbfive WITHOUT ANY WARRANTY! MIGHT BE WRONG! Consider this text with great scepticism if something does not match observed behaviour or the code of the Yosys-toolchain.
@@ -34,10 +35,14 @@ CSDECODE_W: Used in conjunction with CS_W_ above. If unused don't change (defaul
 CSDECODE_W: Used in conjunction with CS_R_ above. If unused don't change (defaults to 0b000).
 INITVAL_xx: Used to initialize the EBR with some data. For details consult ECP5_EBR_INITVAL.txt.
 
-Depending on DATA_WIDTH_R you will not need all 14 bits of ADR[13:0]. You have to calculate how many bits you need and discard the LOWEST unneeded bits of ADR, not the highest as one might think. Said otherwise, for a 9 bit wide data bus you need ADR3 (LSB) to ADR13 (MSB). 
+Depending on DATA_WIDTH_R you will not need all 14 bits of ADR[13:0]. You have to calculate how many bits you need and discard the LOWEST unneeded bits of ADR, not the highest as one might think. Said otherwise, for a 9 bit wide data bus you need ADR3 (LSB) to ADR13 (MSB).
+
+Beware that for DATA_WIDTH_R(36) there is some strange mapping going on, ie data on DI0 will leave the EBR on DO17, DI1 on DO18, ..., DI17 on DO35, DI18 on DO0, DI19 on DO1 and so on.
 
 2) Timing
 In the Memory Usage Guide there are various timing diagrams with annotations like tSUCE_EBR, tHCE_EBR and so on. I was unable to find the actual numbers for these constants. I am sure they are defined somewhere, but i did not find them for the ECP5. I found numbers for some other Lattice-FPGA, from what i remember you probably don't need to worry about timing except maybe for really high clock rates. I ran quick tests with 200MHz(!) input clock to the EBR and had no problems, but i do not guarantee anything!
+
+For maximum speed you will need to enable the Output Registers by specifing .REGMODE("OUTREG"). Beware that this will add some latency, carefuly look at the right timing diagram in the Memory Usage Guide.
 
 3) ROM, FIFOs and other animals
 When talking about EBR the ECP5 only has two things: DP16KD (true dual port) and PDPW16KD (pseudo dual port). At this moment in time only the latter seems to be supported by Yosys. The other things that are mentioned / explained in the Memory Usage Guide are built by the Lattice software using EBR and logic around. If you want to use only Yosys you have to write code yourself or find some FOSS stuff on the internet.
@@ -45,9 +50,11 @@ When talking about EBR the ECP5 only has two things: DP16KD (true dual port) and
 For a ROM you don't actually need code, just use a PDPW16KD with CLKW and CEW tied to '0' so you can't write to it and initialize it with your data using INITVAL-constructs.
 
 4) Simulation
-At this moment in time there is no FOSS model of the PDPW16KD for simulation. If you have the Diamond software from Lattice you can find some files somewhere inside their stuff, but i don't know if it is legal to use these with other tools and so on (also it did not work for me, whatever...). 
+At this moment in time there is no FOSS model of the PDPW16KD for simulation. If you have the Diamond software from Lattice you can find some files somewhere inside their stuff, but i don't know if it is legal to use these with other tools and so on. At least it works with Icarus Verilog if you add this to your top level module:
+GSR GSR_INST (.GSR(1'b1));
+PUR PUR_INST (.PUR(1'b1));
 
 
 
 
-(version 1 - 20.07.21)
+(version 2 - 24.07.21)
