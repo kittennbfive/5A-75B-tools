@@ -8,7 +8,7 @@ This stuff was written by a FPGA-beginner, please be nice and constructive.
 
 ### specific to 5A-75B
 
-`FPGA_pin_viewer/` contains a collection of scripts to make a graphical representation (HTML+JS) of the FPGA and show what is connected where.
+`FPGA_Pin_viewer/` contains a collection of scripts to make a graphical representation (HTML+JS) of the FPGA and show what is connected where.
 
 `Connector_viewer/` contains some other scripts to make a graphical representation of the Connectors J1-J8, the buffers and the FPGA.
 
