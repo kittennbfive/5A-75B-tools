@@ -10,26 +10,27 @@ Current consumption of the board is about 100mA.
 
 The actual Verilog code is in `top.v`.  
 
-**MAKING THE TOOLCHAIN:**  
+## Prerequisites
+### Making the toolchain
 https://github.com/YosysHQ/prjtrellis  
 https://github.com/YosysHQ/yosys  
 https://github.com/YosysHQ/nextpnr - make sure to choose the right architecture!  
 
-**SYNTHESIZE:**  
+## Compiling
+### Synthesize  
 `yosys -p "synth_ecp5 -json out.json" top.v`  
 The command is quite verbose, you can add `-q` to reduce this.  
 
-**PLACE AND ROUTE:**  
+### Place and route  
 `nextpnr-ecp5 --json out.json --25k --package CABGA256 --lpf constraints.lpf --textcfg out.cfg`  
 Same as above concerning verbosity.  
 
-**CREATE PROGRAMMING FILE:**  
+### Create programming file
 `ecppack --svf bitstream.svf out.cfg`  
   
 The result `bitstream.svf` is a big text file (just like `out.json` and `out.cfg`, look at them if you are curious) that contains JTAG-instructions to flash the FPGA (not the FLASH-IC, so it will only last until power cycling the board).  
 
-**PROGRAMMING THE FPGA:**  
-
+## Programming
 I first tried with a *Bus Pirate* and openocd but it did not work and was really slow, like over 2 minutes.  
 
 I then tried with a **FT232H-board** (not FT2232) from China and openocd and it works great and takes one second.  
@@ -54,4 +55,4 @@ Beware that the bitstream is only stored inside the FPGA-RAM, so it will be lost
   
   
   
-(c) 2020 by kitten_nb_five - AGPLv3+ - NO WARRANTY!
+(c) 2020-22 by kittennbfive - AGPLv3+ - NO WARRANTY!
