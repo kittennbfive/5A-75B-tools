@@ -12,6 +12,8 @@ This stuff was written by a FPGA-beginner, please be nice and constructive.
 
 `Connector_viewer/` contains some other scripts to make a graphical representation of the Connectors J1-J8, the buffers and the FPGA.
 
+`pin_listing_scripts/` contains some scripts to print various lists of IO (useful for hardware-hacking).
+
 `I_want_inputs/` contains a hardware-modification for getting 5V-tolerant inputs. 
 
 General informations about the board can be found here: https://github.com/q3k/chubby75
