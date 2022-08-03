@@ -1,5 +1,3 @@
-CORRECTED VERSION WITH RIGHT PIN ORDERING (hopefully...)
-
 This is a collection of scripts (Perl5) to get a more visual representation of the connections between J1-J8, the Buffers and the FPGA.
 
 VALID ONLY FOR 5A-75B VERSION 7.0!
