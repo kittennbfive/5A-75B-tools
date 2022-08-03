@@ -1,0 +1,53 @@
+#! /usr/bin/perl
+
+=pod
+VALID ONLY FOR 5A-75B V7.0
+
+This hacked together script lists to which FPGA IO each buffer input is connected, sorted by FPGA-banks.
+
+The output is quite long as several FPGA IO are connected to several buffer inputs.
+
+This might be useful for some hardware-hacking.
+
+(c) 2022 by kittennbfive
+AGPLv3+
+THIS CODE IS PROVIDED WITHOUT ANY WARRANTY!
+=cut
+
+use strict;
+use warnings FATAL=>'all';
+use autodie;
+
+my %buffers; #{U<n>}->{<bitnr>}={pin_fpga=><alphanum>, bank=><bank>, pinfunc=><pinfunc>}
+
+open my $in, '<', 'pin_con.txt';
+my $line;
+while(($line=<$in>))
+{
+	chomp($line);
+	if($line=~m!^\|\s*\d+\s*\|.+?\|\s*([A-Z0-9]+)\s*\|\s+Bank\s+(\d)\s+-\s+([A-Z0-9_]+)\s+/.+\|\s*\*?(U\d+_B\d)\s*\|!)
+	{
+		my ($pin_fpga, $bank, $pinfunc, $buffer)=($1, $2, $3, $4);
+		my $bitnr=($buffer=~s/U\d+_B//r);
+		$buffer=~s/_B\d//;
+		$pinfunc=~s/_//g;
+		
+		$buffers{$buffer}->{$bitnr}={pin_fpga=>$pin_fpga, bank=>$bank, pinfunc=>$pinfunc};
+	}
+}
+close $in;
+
+foreach my $bank (qw/0 1 2 3 6 7 8/)
+{
+	print "BANK $bank:\n";
+	foreach my $buf (sort {($a=~s/U//r)<=>($b=~s/U//r)} keys %buffers)
+	{
+		foreach my $bitnr (sort keys %{$buffers{$buf}})
+		{
+			my $pinfunc=$buffers{$buf}->{$bitnr}->{pinfunc};
+			my $fpga_pin=$buffers{$buf}->{$bitnr}->{pin_fpga};
+			print $buf,'_',$bitnr," -> $pinfunc [$fpga_pin]\n";
+		}
+	}
+}
+
