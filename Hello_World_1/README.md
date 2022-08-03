@@ -18,7 +18,7 @@ https://github.com/YosysHQ/nextpnr - make sure to choose the right architecture!
 
 ## Compiling
 ### Synthesize  
-`yosys -p "synth_ecp5 -json out.json" top.v`  
+`yosys -p "read_verilog -pwires top.v; synth_ecp5 -json out.json -top top.v"`  
 The command is quite verbose, you can add `-q` to reduce this.  
 
 ### Place and route  
