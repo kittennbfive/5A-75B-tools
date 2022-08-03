@@ -3,7 +3,7 @@
 =pod
 This script parses pin_con.txt and stores the data in an internal Perl-format.
 
-(c) 2020 by kitten_nb_five
+(c) 2020-2022 by kittennbfive
 AGPLv3+
 THIS CODE IS PROVIDED WITHOUT ANY WARRANTY!
 =cut
