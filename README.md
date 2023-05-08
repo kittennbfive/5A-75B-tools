@@ -6,7 +6,7 @@ EVERYTHING IS PROVIDED WITHOUT ANY WARRANTY!
 
 This stuff was written by a FPGA-beginner, please be nice and constructive.
 
-### specific to 5A-75B
+### specific to 5A-75B V7.0
 
 `FPGA_Pin_Viewer/` contains a collection of scripts to make a graphical representation (HTML+JS) of the FPGA and show what is connected where.
 
@@ -16,7 +16,9 @@ This stuff was written by a FPGA-beginner, please be nice and constructive.
 
 `I_want_inputs/` contains a hardware-modification for getting 5V-tolerant inputs. 
 
-`buffer_overview/` contains some informations about how the IO and buffers are wired (useful for hardware-hacking). Valid ONLY for V7.0!  
+`buffer_overview/` contains some informations about how the IO and buffers are wired (useful for hardware-hacking).
+
+`SDRAM/` will - hopefully one day - contain Verilogcode for the SDRAM (x2) on the board. For now there is only a constraints-file for Yosys/nextpnr...
 
 General informations about the board can be found here: https://github.com/q3k/chubby75
 
