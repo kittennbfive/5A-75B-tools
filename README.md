@@ -16,6 +16,8 @@ This stuff was written by a FPGA-beginner, please be nice and constructive.
 
 `I_want_inputs/` contains a hardware-modification for getting 5V-tolerant inputs. 
 
+`buffer_overview/` contains some informations about how the IO and buffers are wired (useful for hardware-hacking). Valid ONLY for V7.0!  
+
 General informations about the board can be found here: https://github.com/q3k/chubby75
 
 ### not (so) specific
