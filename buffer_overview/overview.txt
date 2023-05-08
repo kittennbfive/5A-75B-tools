@@ -1,0 +1,32 @@
+Licence of this file: CC0
+
+VALID ONLY FOR 5A-75B V7.0! NO WARRANTY!
+
+Which pin goes through which buffer?
+
+Pins 4,16 on each connector are GND.
+
+Pins 1,2,3,5,6,7 on each connector are wired to a dedicated FPGA pin each. -> 8x6=48 FPGA pins
+J1 -> U28
+J2 -> U24, U28
+J3 -> U23, U24
+J4 -> U23
+J5 -> U9
+J6 -> U9, U12
+J7 -> U12, U15
+J8 -> U15
+
+Pins 8,9,10,11,12,13,14,15 are common between connectors. -> 8 FPGA pins
+
+Pin 8 -> U17, U20
+Pin 9 -> U10, U22
+Pin 10 -> U10, U22
+Pin 11 -> U10, U22
+Pin 12 -> U10, U22
+Pin 13 -> U17, U18, U20, U21
+Pin 14 -> U17, U18, U20, U21
+Pin 15 -> U17, U18, U20, U21
+
+TOTAL: 48+8=56 FPGA pins available on the buffers.
+
+If you need 3,3V IO you can check the first list to see which buffer you need to remove/bridge for the connector where you want your IO.
