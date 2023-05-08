@@ -1,6 +1,6 @@
 ## A collection of tools and notes made while messing with the Colorlight 5A-75B V7.0 using the FOSS [Yosys](https://github.com/YosysHQ)-toolchain.
 
-(c) 2020-22 by kittennbfive - AGPLv3+ unless otherwise specified
+(c) 2020-23 by kittennbfive - AGPLv3+ unless otherwise specified
 
 EVERYTHING IS PROVIDED WITHOUT ANY WARRANTY!
 
