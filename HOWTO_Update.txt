@@ -1,0 +1,29 @@
+Licence of this file: CC0
+
+This is a small note on how to update the toolchain for ECP5. Please consider with caution, it works for me but i am really bad with git...
+
+The commands are all entered as normal user, not as root (except for make install if you don't use sudo).
+
+I assume you already have a directory Yosys/ or similar with the 3 subprojects!
+
+PRJTRELLIS:
+cd prjtrellis/
+git pull
+git submodule update
+cd libtrellis/
+cmake -DCMAKE_INSTALL_PREFIX=/usr .
+make -j$(nproc)
+sudo make install
+
+YOSYS:
+cd yosys/
+git pull
+make -j$(nproc)
+sudo make install
+
+NEXTPNR:
+cd nextpnr/
+git pull
+cmake . -DARCH=ecp5 -DTRELLIS_INSTALL_PREFIX=/usr
+make -j$(nproc)
+sudo make install
