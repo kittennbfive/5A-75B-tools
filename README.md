@@ -30,4 +30,6 @@ General informations about the board can be found here: https://github.com/q3k/c
 
 `ecp5_bb_sanitizer.pl` is useful for generating a wrapper around the ECP5-modules defined in Yosys' `cells_bb.v` where multiple same pins are grouped in buses as Lattice should have done.
 
-`HOWTO_Update.txt` contains the needed commands to update the toolchain (for ECP5).
+`HOWTO_Update.txt` contains the needed commands to update the toolchain (for ECP5).  
+
+**NEW** `beautify-timing-report.pl` somewhat beautifies the critical timing report from nextpnr. Early release, to be improved. Based on an idea from https://github.com/YosysHQ/nextpnr/issues/551
