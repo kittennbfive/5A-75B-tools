@@ -30,8 +30,23 @@
 #
 # For more information, please refer to <http://unlicense.org/>
 
+=pod
+VERSION 0.02 - TO BE IMPROVED - CONSIDER OUTPUT WITH CAUTION
 
-# VERSION 0.01 - TO BE IMPROVED - CONSIDER OUTPUT WITH CAUTION
+This script "beautifies" the critical timing report of nextpnr.
+
+You can feed it a logfile or directly pipe the output of nextpnr to it. Caution, nextpnr writes to STDERR.
+
+If you are using a pipe you can specify -p as an argument for this script to make it print everything else that isn't a critical timing report from nextpnr.
+
+If you don't want to use -p but you are interested in the result (PASS/FAIL) you can specifiy -r as an argument to make the script print this line (and the beautified timing report of course). This will give you the essential informations without all the extra-stuff from nextpnr that you may not be interested in.
+
+Examples (valid for bash, please check the documentation if you are using another shell, as i said nextpnr writes to STDERR):
+./beautify-timing-report.pl < logfile.txt [ > logfile_out.txt ]
+nextpnr-ecp5 [arguments] 2> >(./beautify-timing-report.pl -p)
+nextpnr-ecp5 [arguments] 2> >(./beautify-timing-report.pl -p > log.txt)
+nextpnr-ecp5 [arguments] 2> >(./beautify-timing-report.pl -r)
+=cut
 
 use strict;
 use warnings FATAL=>'all';
@@ -43,7 +58,17 @@ use constant SINK=>1;
 use constant SETUP=>2;
 use constant TIME_TOTAL=>3;
 
+my $print_non_matching=0;
+my $print_pass_fail=0;
+
+foreach (@ARGV)
+{
+	$print_non_matching=1 if($_ eq '-p'); # "passthrough"
+	$print_pass_fail=1 if($_ eq '-r'); # "result"
+}
+
 my $running=0;
+my $finished=0;
 
 my %data=( clock_name=>undef, clock_edge1=>undef, clock_edge2=>undef, name=>undef, from_x=>undef, from_y=>undef, to_x=>undef, to_y=>undef, time_logic=>undef, time_net=>undef, time_setup=>undef, time_total_logic=>undef, time_total_routing=>undef, time_total_sum=>undef );
 
@@ -52,7 +77,13 @@ my $sink_last;
 while((my $l=<STDIN>))
 {
 	chomp($l);
-	next unless($l=~/^Info/);
+	
+	if($finished)
+	{
+		print "$l\n" if($print_non_matching || ($print_pass_fail && $l=~/Max frequency for clock/));
+		next;
+	}
+	
 	$l=~s/^Info:\s+//;
 
 	given($l)
@@ -74,7 +105,7 @@ while((my $l=<STDIN>))
 			
 			my $source=($2=~s/\.\w+$//r);
 			
-			die "expected $sink_last but got $source" if($sink_last && $source ne $sink_last);
+			die "beautify-timing-report.pl: error: expected $sink_last but got $source" if($sink_last && $source ne $sink_last);
 		}
 		
 		when(/^([\d\.]+)\s+[\d\.]+\s+Net\s+(.+?)\s+budget\s+-?[\d\.]+\s+ns\s+\((\d+,\d+)\)\s+->\s+\((\d+,\d+)\)$/)
@@ -109,9 +140,12 @@ while((my $l=<STDIN>))
 			if($running)
 			{
 				beauty_print(TIME_TOTAL, \%data);
-				last;
+				$finished=1;
+				last unless($print_non_matching || $print_pass_fail);
 			}
 		}
+		
+		default: print "Info: $l\n" if($print_non_matching && (!$running || $finished));
 	}
 }
 
@@ -141,9 +175,9 @@ sub beauty_print
 		when(TIME_TOTAL)
 		{
 			print "--- ---   -----   -----   ----------------------------------------\n";
-			printf("TOTAL     %5.1f + %5.1f = %5.1f\n", $ref->{time_total_logic}, $ref->{time_total_routing}, $ref->{time_total_sum});
+			printf("TOTAL     %5.1f + %5.1f = %5.1f\n\n", $ref->{time_total_logic}, $ref->{time_total_routing}, $ref->{time_total_sum});
 		}
 		
-		default: die("unknown \$type");
+		default: die("beautify-timing-report.pl: error: unknown \$type");
 	}
 }
