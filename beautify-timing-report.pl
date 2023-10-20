@@ -31,7 +31,7 @@
 # For more information, please refer to <http://unlicense.org/>
 
 =pod
-VERSION 0.02 - TO BE IMPROVED - CONSIDER OUTPUT WITH CAUTION
+VERSION 0.03 - TO BE IMPROVED - CONSIDER OUTPUT WITH CAUTION
 
 This script "beautifies" the critical timing report of nextpnr.
 
@@ -108,7 +108,7 @@ while((my $l=<STDIN>))
 			die "beautify-timing-report.pl: error: expected $sink_last but got $source" if($sink_last && $source ne $sink_last);
 		}
 		
-		when(/^([\d\.]+)\s+[\d\.]+\s+Net\s+(.+?)\s+budget\s+-?[\d\.]+\s+ns\s+\((\d+,\d+)\)\s+->\s+\((\d+,\d+)\)$/)
+		when(/^([\d\.]+)\s+[\d\.]+\s+Net\s+(.+?)\s+\((\d+,\d+)\)\s+->\s+\((\d+,\d+)\)$/)
 		{
 			$data{time_net}=$1;
 			$data{name}=$2;
